@@ -544,89 +544,83 @@ class PaginatedDataTableState extends State<AdvancedPaginatedDataTable> {
       );
     }
 
-    return Stack(
-      children: [
-        Card(
-          semanticContainer: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              if (headerWidgets.isNotEmpty)
-                Semantics(
-                  container: true,
-                  child: DefaultTextStyle(
-                    // These typographic styles aren't quite the regular ones. We pick the closest ones from the regular
-                    // list and then tweak them appropriately.
-                    // See https://material.io/design/components/data-tables.html#tables-within-cards
-                    style: _selectedRowCount > 0
-                        ? themeData.textTheme.subtitle1!
-                            .copyWith(color: themeData.colorScheme.secondary)
-                        : themeData.textTheme.headline6!
-                            .copyWith(fontWeight: FontWeight.w400),
-                    child: IconTheme.merge(
-                      data: const IconThemeData(
-                        opacity: 0.54,
-                      ),
-                      child: Ink(
-                        height: 64.0,
-                        color: _selectedRowCount > 0
-                            ? themeData.secondaryHeaderColor
-                            : null,
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            start: startPadding,
-                            end: 14.0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: headerWidgets,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        if (headerWidgets.isNotEmpty)
+          Semantics(
+            container: true,
+            child: DefaultTextStyle(
+              // These typographic styles aren't quite the regular ones. We pick the closest ones from the regular
+              // list and then tweak them appropriately.
+              // See https://material.io/design/components/data-tables.html#tables-within-cards
+              style: _selectedRowCount > 0
+                  ? themeData.textTheme.subtitle1!
+                      .copyWith(color: themeData.colorScheme.secondary)
+                  : themeData.textTheme.headline6!
+                      .copyWith(fontWeight: FontWeight.w400),
+              child: IconTheme.merge(
+                data: const IconThemeData(
+                  opacity: 0.54,
                 ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: ScrollPhysics(),
-                dragStartBehavior: widget.dragStartBehavior,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                  child: Scrollbar(
-                    scrollbarOrientation: ScrollbarOrientation.bottom,
-                    isAlwaysShown: true,
-                    controller: ScrollController(),
-                    child: DataTable(
-                      key: _tableKey,
-                      columns: widget.columns,
-                      sortColumnIndex: widget.sortColumnIndex,
-                      sortAscending: widget.sortAscending,
-                      onSelectAll: widget.onSelectAll,
-                      // Make sure no decoration is set on the DataTable
-                      // from the theme, as its already wrapped in a Card.
-                      decoration: const BoxDecoration(),
-                      dataRowHeight: widget.dataRowHeight,
-                      headingRowHeight: widget.headingRowHeight,
-                      horizontalMargin: widget.horizontalMargin,
-                      columnSpacing: widget.columnSpacing,
-                      showCheckboxColumn: widget.showCheckboxColumn,
-                      showBottomBorder: true,
-                      rows: loading
-                          ? loadingRows(
-                              widget.rowsPerPage,
-                            )
-                          : _getRows(_firstRowIndex, widget.rowsPerPage),
+                child: Ink(
+                  height: 64.0,
+                  color: _selectedRowCount > 0
+                      ? themeData.secondaryHeaderColor
+                      : null,
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: startPadding,
+                      end: 14.0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: headerWidgets,
                     ),
                   ),
                 ),
               ),
-              if (!loading) createTableFooter(),
-            ],
+            ),
+          ),
+        Scrollbar(
+          scrollbarOrientation: ScrollbarOrientation.bottom,
+          isAlwaysShown: true,
+          interactive: true,
+          controller: ScrollController(),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: ScrollPhysics(),
+            dragStartBehavior: widget.dragStartBehavior,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: constraints.maxWidth),
+              child: DataTable(
+                key: _tableKey,
+                columns: widget.columns,
+                sortColumnIndex: widget.sortColumnIndex,
+                sortAscending: widget.sortAscending,
+                onSelectAll: widget.onSelectAll,
+                // Make sure no decoration is set on the DataTable
+                // from the theme, as its already wrapped in a Card.
+                decoration: const BoxDecoration(),
+                dataRowHeight: widget.dataRowHeight,
+                headingRowHeight: widget.headingRowHeight,
+                horizontalMargin: widget.horizontalMargin,
+                columnSpacing: widget.columnSpacing,
+                showCheckboxColumn: widget.showCheckboxColumn,
+                showBottomBorder: true,
+                rows: loading
+                    ? loadingRows(
+                        widget.rowsPerPage,
+                      )
+                    : _getRows(_firstRowIndex, widget.rowsPerPage),
+              ),
+            ),
           ),
         ),
-        if (loading) const CircularProgressIndicator()
+        if (!loading) createTableFooter(),
       ],
     );
+    if (loading) const CircularProgressIndicator();
   }
 
   List<DataRow> loadingRows(int totalRows) {
