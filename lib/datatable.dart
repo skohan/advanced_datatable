@@ -586,14 +586,16 @@ class PaginatedDataTableState extends State<AdvancedPaginatedDataTable> {
                     ),
                   ),
                 ),
-              Scrollbar(
-                scrollbarOrientation: ScrollbarOrientation.bottom,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  physics: ScrollPhysics(),
-                  dragStartBehavior: widget.dragStartBehavior,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: ScrollPhysics(),
+                dragStartBehavior: widget.dragStartBehavior,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: Scrollbar(
+                    scrollbarOrientation: ScrollbarOrientation.bottom,
+                    isAlwaysShown: true,
+                    controller: ScrollController(),
                     child: DataTable(
                       key: _tableKey,
                       columns: widget.columns,
